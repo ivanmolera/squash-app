@@ -1,0 +1,44 @@
+mutation createUser {
+  createUser(name: "Borja Golán", authProvider: {email: "borja.golan@gmail.com", password: "secret"}) {
+    id
+    name
+  }
+}
+
+mutation signIn {
+  signinUser(auth: {email: "borja.golan@gmail.com", password: "secret"}) {
+    token
+    user {
+      id
+      name
+    }
+  }
+}
+
+mutation createMatch {
+  createMatch(url: "http://www.apple.com", description: "Apple") {
+    url
+    description
+  }
+}
+
+query allMatches {
+  allMatches {
+    url
+    description
+  }
+}
+
+query matches {
+  allMatches(skip: 1, first: 2) {
+    url
+    description
+  }
+}
+
+query filteredMatches {
+  allMatches(filter: {description_contains: "appl", url_contains: "appl"}) {
+    url
+    description
+  }
+}

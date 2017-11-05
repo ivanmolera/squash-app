@@ -1,0 +1,53 @@
+type User {
+  id: ID!
+  name: String!
+  email: String
+  password: String
+}
+
+input AuthData {
+  email: String!
+  password: String!
+}
+
+type SigninPayload {
+  token: String
+  user: User
+}
+
+type Match {
+    id: ID!
+    url: String!
+    description: String
+    postedBy: User
+}
+
+type Vote {
+    id: ID!
+    createdAt: DateTime!
+    user: User!
+    match: Match!
+}
+
+scalar DateTime
+
+type Query {
+  allMatches(filter: MatchFilter, skip: Int = 0, first: Int = 0): [Match]
+}
+
+input MatchFilter {
+  description_contains: String
+  url_contains: String
+}
+
+type Mutation {
+  createUser(name: String!, authProvider: AuthData!): User
+  createMatch(url: String!, description: String!): Match
+  signinUser(auth: AuthData): SigninPayload
+  createVote(matchId: ID, userId: ID): Vote
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}
