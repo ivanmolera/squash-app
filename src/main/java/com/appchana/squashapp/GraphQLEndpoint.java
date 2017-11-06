@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @WebServlet(urlPatterns = "/graphql")
 public class GraphQLEndpoint extends SimpleGraphQLServlet {
 
-    private static final MatchRepository MATCH_REPOSITORY;
+    private static final MatchRepository matchRespository;
     private static final UserRepository userRepository;
     private static final VoteRepository voteRepository;
 
@@ -42,7 +42,7 @@ public class GraphQLEndpoint extends SimpleGraphQLServlet {
         //Change to `new MongoClient("mongodb://<host>:<port>/squashapp")`
         //if you don't have Mongo running locally on port 27017
         MongoDatabase mongo = new MongoClient().getDatabase("squashapp");
-        MATCH_REPOSITORY = new MatchRepository(mongo.getCollection("matches"));
+        matchRespository = new MatchRepository(mongo.getCollection("matches"));
         userRepository = new UserRepository(mongo.getCollection("users"));
         voteRepository = new VoteRepository(mongo.getCollection("votes"));
     }
@@ -55,11 +55,11 @@ public class GraphQLEndpoint extends SimpleGraphQLServlet {
         return SchemaParser.newParser()
                 .file("schema.graphqls")
                 .resolvers(
-                        new Query(MATCH_REPOSITORY),
-                        new Mutation(MATCH_REPOSITORY, userRepository, voteRepository),
+                        new Query(matchRespository, userRepository),
+                        new Mutation(matchRespository, userRepository, voteRepository),
                         new SigninResolver(),
                         new MatchResolver(userRepository),
-                        new VoteResolver(MATCH_REPOSITORY, userRepository)) //new resolver
+                        new VoteResolver(matchRespository, userRepository)) //new resolver
                 .scalars(Scalars.dateTime) //register the new scalar
                 .build()
                 .makeExecutableSchema();

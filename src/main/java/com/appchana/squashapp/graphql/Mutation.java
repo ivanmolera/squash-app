@@ -37,17 +37,17 @@ public class Mutation implements GraphQLRootResolver {
         return userRepository.saveUser(newUser);
     }
 
-    // The way to inject the context is via DataFetchingEnvironment
-    public Match createMatch(String url, String description, DataFetchingEnvironment env) {
-        AuthContext context = env.getContext();
-        Match newMatch = new Match(url, description, context.getUser().getId());
+    public Match createMatch(String url, String description, String firstUserId, String secondUserId) {
+        Match newMatch = new Match(url, description, firstUserId, secondUserId);
         matchRepository.saveMatch(newMatch);
         return newMatch;
     }
 
-    public Vote createVote(String matchId, String userId) {
+    // The way to inject the context is via DataFetchingEnvironment
+    public Vote createVote(String matchId, DataFetchingEnvironment env) {
+        AuthContext context = env.getContext();
         ZonedDateTime now = Instant.now().atZone(ZoneOffset.UTC);
-        return voteRepository.saveVote(new Vote(now, userId, matchId));
+        return voteRepository.saveVote(new Vote(now, context.getUser().getId(), matchId));
     }
 
     public SigninPayload signinUser(AuthData auth) throws IllegalAccessException {

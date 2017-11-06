@@ -31,7 +31,9 @@ public class MatchRepository {
         return new Match(
                 doc.get("_id").toString(),
                 doc.getString("url"),
-                doc.getString("description"));
+                doc.getString("description"),
+                doc.getString("firstUserId"),
+                doc.getString("secondUserId"));
     }
 
     public Match findById(String id) {
@@ -72,7 +74,8 @@ public class MatchRepository {
         Document doc = new Document();
         doc.append("url", match.getUrl());
         doc.append("description", match.getDescription());
-        doc.append("postedBy", match.getUserId());
+        doc.append("firstUserId", match.getFirstUserId());
+        doc.append("secondUserId", match.getSecondUserId());
         matches.insertOne(doc);
     }
 }
